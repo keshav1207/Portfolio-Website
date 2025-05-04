@@ -1,6 +1,10 @@
-@media screen and (min-width: 1200px) and (max-width: 1250px) {
+@media screen and (min-width: 1200px) and (max-width: 1275px) {
   .about-details-container {
     margin-top: 10rem;
+  }
+
+  #experience {
+    margin-top: 5rem;
   }
 }
 
