@@ -1,0 +1,15 @@
+.card-img-top {
+  height: 200px; /* Set a fixed height */
+  object-fit: cover; /* Crop/scale image to fill the area nicely */
+}
+
+body,
+h1,
+h3,
+h5,
+p,
+a,
+li,
+button {
+  font-family: "Inter", sans-serif;
+}

@@ -4,32 +4,28 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
-    />
-
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
     />
 
     <link rel="stylesheet" href="index.css" />
-
     <title>My Portfolio</title>
   </head>
-
-  <body class="bg-light text-body">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
       <div class="container">
-        <a class="navbar-brand fw-bold text-body" href="#">Keshav Callychurn</a>
+        <a class="navbar-brand fw-bold" href="#">Keshav Callychurn</a>
         <button
           class="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
         >
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -39,37 +35,36 @@
         >
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link text-body" href="#about">About</a>
+              <a class="nav-link text-dark" href="#about">About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-body" href="#experience">Experience</a>
+              <a class="nav-link text-dark" href="#experience">Experience</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-body" href="#projects">Projects</a>
+              <a class="nav-link text-dark" href="#projects">Projects</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-body" href="#contact">Contact</a>
+              <a class="nav-link text-dark" href="#contact">Contact</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
 
-    <!-- Profile Section -->
     <section id="profile" class="container py-5">
       <div class="row align-items-center">
-        <div class="col-md-6 text-center">
+        <div class="col-md-6">
           <img
             src="./assets/profilePic.jpg"
             alt="Keshav Callychurn"
-            class="img-fluid rounded-circle"
+            class="img-fluid rounded-circle mx-auto d-block"
             style="max-width: 250px"
           />
         </div>
         <div class="col-md-6">
           <p>Hello, I'm</p>
-          <h1 class="display-4 fw-bold">Keshav Callychurn</h1>
-          <p class="lead text-secondary">Fullstack Developer</p>
+          <h1 class="display-4">Keshav Callychurn</h1>
+          <p class="lead">Fullstack Developer</p>
           <div class="btn-group">
             <button
               class="btn btn-secondary"
@@ -89,7 +84,7 @@
               <img
                 src="./assets/linkedin.png"
                 alt="LinkedIn"
-                class="mx-2"
+                class="icon mx-2"
                 style="width: 30px; height: 30px"
               />
             </a>
@@ -97,7 +92,7 @@
               <img
                 src="./assets/github.png"
                 alt="GitHub"
-                class="mx-2"
+                class="icon mx-2"
                 style="width: 30px; height: 30px"
               />
             </a>
@@ -106,61 +101,70 @@
       </div>
     </section>
 
-    <!-- About Section -->
     <section id="about" class="container py-5">
       <div class="text-center mb-5">
-        <p class="text-secondary mb-1">Get To Know More</p>
-        <h1 class="fw-bold text-body">About Me</h1>
+        <p class="text-muted mb-1">Get To Know More</p>
+        <h1 class="fw-bold">About Me</h1>
       </div>
 
       <div class="row align-items-center gy-4">
+        <!-- Profile Image -->
         <div class="col-lg-5 text-center">
           <img
             src="./assets/about-pic.png"
             alt="Profile picture"
             class="img-fluid rounded shadow-sm"
-            style="max-width: 80%"
+            style="max-width: 80%; border-radius: 10px"
           />
         </div>
+
+        <!-- About Details -->
         <div class="col-lg-7">
-          <div class="row g-3 mb-4">
+          <div class="row g-3">
+            <!-- Experience Card -->
             <div class="col-md-6">
-              <div class="card border-0 shadow-sm h-100 bg-white">
+              <div class="card border-0 shadow-sm h-100">
                 <div class="card-body text-center">
                   <img
                     src="./assets/experience.png"
-                    alt="Experience"
+                    alt="Experience icon"
                     class="mb-3"
                     style="width: 40px"
                   />
-                  <h5 class="card-title fw-bold text-body">Experience</h5>
-                  <p class="card-text small text-secondary">
-                    Currently interning with the Ontario Government, working on
-                    a .Net project as well an AI project powered by python and
-                    Langchain.
+                  <h5 class="card-title fw-bold">Experience</h5>
+                  <p class="card-text small text-muted">
+                    Currently interning with the Ontario Government, where I'm
+                    developing a diverse skill set through hands-on experience
+                    with .NET technologies, as well as Python-based AI projects
+                    leveraging LangChain.
                   </p>
                 </div>
               </div>
             </div>
+
+            <!-- Education Card -->
             <div class="col-md-6">
-              <div class="card border-0 shadow-sm h-100 bg-white">
+              <div class="card border-0 shadow-sm h-100">
                 <div class="card-body text-center">
                   <img
                     src="./assets/education.png"
-                    alt="Education"
+                    alt="Education icon"
                     class="mb-3"
                     style="width: 40px"
                   />
-                  <h5 class="card-title fw-bold text-body">Education</h5>
-                  <p class="card-text small text-secondary">
-                    Computer Programming Diploma<br />
+                  <h5 class="card-title fw-bold">Education</h5>
+                  <p class="card-text small text-muted">
+                    Bachelor Degree in Business <br />
+                    Computer Programming and Analysis Advanced Diploma
                   </p>
                 </div>
               </div>
             </div>
           </div>
-          <div class="text-secondary">
-            <p>
+
+          <!-- Personal Story -->
+          <div class="mt-4">
+            <p class="text-muted">
               I was born and raised in Mauritius, a multicultural country where
               I became fluent in both English and French. After completing high
               school, I moved to Melbourne, Australia, to pursue a Bachelor of
@@ -180,64 +184,56 @@
       </div>
     </section>
 
-    <!-- Experience Section -->
     <section id="experience" class="container py-5">
       <div class="text-center mb-5">
-        <p class="text-secondary mb-1">Explore My</p>
-        <h1 class="fw-bold text-body">Experience & Skills</h1>
+        <p class="text-muted mb-1">Explore My</p>
+        <h1 class="fw-bold">Experience</h1>
       </div>
 
       <div class="row g-4">
+        <!-- Backend Development Card -->
         <div class="col-md-6">
-          <div class="card border-0 shadow-sm h-100 bg-white">
-            <div class="card-body text-center">
-              <img
-                src="./assets/backend.png"
-                alt="Backend Icon"
-                class="mb-2"
-                style="width: 50px"
-              />
-              <h3 class="fw-bold text-body">Backend Development</h3>
-              <div class="row row-cols-2 g-2 text-center mt-3">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="text-center mb-3">
+                <img
+                  src="./assets/backend.png"
+                  alt="Backend Icon"
+                  style="width: 50px"
+                  class="mb-2"
+                />
+                <h3 class="fw-bold">Backend Development</h3>
+              </div>
+
+              <div class="row row-cols-2 g-2 text-center">
                 <div class="col">
-                  <div class="border rounded py-2 fw-semibold text-secondary">
+                  <div class="border rounded py-2 fw-semibold text-muted">
                     Node.js
                   </div>
                 </div>
                 <div class="col">
-                  <div class="border rounded py-2 fw-semibold text-secondary">
+                  <div class="border rounded py-2 fw-semibold text-muted">
                     SQL
                   </div>
                 </div>
                 <div class="col">
-                  <div class="border rounded py-2 fw-semibold text-secondary">
+                  <div class="border rounded py-2 fw-semibold text-muted">
                     MongoDB
                   </div>
                 </div>
                 <div class="col">
-                  <div class="border rounded py-2 fw-semibold text-secondary">
+                  <div class="border rounded py-2 fw-semibold text-muted">
                     Express.js
                   </div>
                 </div>
                 <div class="col">
-                  <div class="border rounded py-2 fw-semibold text-secondary">
+                  <div class="border rounded py-2 fw-semibold text-muted">
                     C++
                   </div>
                 </div>
                 <div class="col">
-                  <div class="border rounded py-2 fw-semibold text-secondary">
+                  <div class="border rounded py-2 fw-semibold text-muted">
                     Python
-                  </div>
-                </div>
-                <div class="col">
-                  <div class="border rounded py-2 fw-semibold text-secondary">
-                    Java(Spring boot)
-                  </div>
-                </div>
-
-                <div class="col">
-                  <div class="border rounded py-2 fw-semibold text-secondary">
-                    C#
                   </div>
                 </div>
               </div>
@@ -245,44 +241,48 @@
           </div>
         </div>
 
+        <!-- Frontend Development Card -->
         <div class="col-md-6">
-          <div class="card border-0 shadow-sm h-100 bg-white">
-            <div class="card-body text-center">
-              <img
-                src="./assets/frontend.webp"
-                alt="Frontend Icon"
-                class="mb-2"
-                style="width: 50px"
-              />
-              <h3 class="fw-bold text-body">Frontend Development</h3>
-              <div class="row row-cols-2 g-2 text-center mt-3">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <div class="text-center mb-3">
+                <img
+                  src="./assets/frontend.webp"
+                  alt="Frontend Icon"
+                  style="width: 50px"
+                  class="mb-2"
+                />
+                <h3 class="fw-bold">Frontend Development</h3>
+              </div>
+
+              <div class="row row-cols-2 g-2 text-center">
                 <div class="col">
-                  <div class="border rounded py-2 fw-semibold text-secondary">
+                  <div class="border rounded py-2 fw-semibold text-muted">
                     HTML
                   </div>
                 </div>
                 <div class="col">
-                  <div class="border rounded py-2 fw-semibold text-secondary">
+                  <div class="border rounded py-2 fw-semibold text-muted">
                     CSS
                   </div>
                 </div>
                 <div class="col">
-                  <div class="border rounded py-2 fw-semibold text-secondary">
+                  <div class="border rounded py-2 fw-semibold text-muted">
                     React
                   </div>
                 </div>
                 <div class="col">
-                  <div class="border rounded py-2 fw-semibold text-secondary">
+                  <div class="border rounded py-2 fw-semibold text-muted">
                     JavaScript
                   </div>
                 </div>
                 <div class="col">
-                  <div class="border rounded py-2 fw-semibold text-secondary">
+                  <div class="border rounded py-2 fw-semibold text-muted">
                     TypeScript
                   </div>
                 </div>
                 <div class="col">
-                  <div class="border rounded py-2 fw-semibold text-secondary">
+                  <div class="border rounded py-2 fw-semibold text-muted">
                     React Native
                   </div>
                 </div>
@@ -472,7 +472,6 @@
       </div>
     </footer>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>
