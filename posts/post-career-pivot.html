@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>From Accountant to Developer — Keshav Callychurn</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: #0f1117; color: #e2e8f0; }
+    body::before { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(99,102,241,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,.04) 1px, transparent 1px); background-size: 48px 48px; }
+    :root { --accent: #6366f1; --accent-light: #818cf8; --card: #161b27; --border: rgba(255,255,255,.07); }
+    .nav-link { color: #94a3b8; font-size: .875rem; font-weight: 500; text-decoration: none; transition: color .2s; }
+    .nav-link:hover { color: #e2e8f0; }
+    .prose { color: #94a3b8; font-size: .975rem; line-height: 1.85; }
+    .prose p { margin-bottom: 1.25rem; }
+    .prose h2 { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin: 2.5rem 0 .9rem; letter-spacing: -.01em; }
+    .prose strong { color: #e2e8f0; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <nav style="position:fixed;top:0;width:100%;z-index:100;background:rgba(15,17,23,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:.75rem 0;">
+    <div style="max-width:64rem;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;">
+      <a href="../index.html" style="font-weight:700;font-size:1.1rem;color:#e2e8f0;text-decoration:none;">Keshav<span style="color:var(--accent-light)">.</span></a>
+      <nav style="display:flex;align-items:center;gap:2rem;">
+        <a href="../index.html#projects" class="nav-link">Projects</a>
+        <a href="../blog.html" class="nav-link">Blog</a>
+        <a href="../index.html#contact" style="padding:.4rem 1rem;border-radius:8px;background:var(--accent);color:#fff;font-size:.85rem;font-weight:600;text-decoration:none;">Contact</a>
+      </nav>
+    </div>
+  </nav>
+
+  <div style="position:relative;z-index:10;max-width:42rem;margin:0 auto;padding:7rem 1.5rem 5rem;">
+    <a href="../blog.html" style="display:inline-flex;align-items:center;gap:.3rem;color:#475569;font-size:.82rem;font-weight:500;text-decoration:none;margin-bottom:2rem;transition:color .2s;" onmouseover="this.style.color='var(--accent-light)'" onmouseout="this.style.color='#475569'">← Back to Blog</a>
+
+    <div style="margin-bottom:2.5rem;">
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;">
+        <span style="display:inline-block;padding:.2rem .65rem;border-radius:999px;font-size:.7rem;font-weight:500;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);color:#a5b4fc;">Career</span>
+        <span style="font-size:.78rem;color:#475569;">April 2, 2025 · 6 min read</span>
+      </div>
+      <h1 style="font-size:clamp(1.6rem,4vw,2.1rem);font-weight:800;letter-spacing:-.02em;line-height:1.2;color:#f8fafc;margin-bottom:.75rem;">From Accountant to Developer: My Career Pivot Story</h1>
+      <p style="color:#64748b;font-size:.9rem;">By Keshav Callychurn</p>
+    </div>
+
+    <hr style="border:none;height:1px;background:var(--border);margin-bottom:2.5rem;" />
+
+    <div class="prose">
+      <p>People are often surprised when I tell them I used to be an accountant. It's not the most obvious path to software development — but looking back, my background in finance shaped how I think about code in ways I hadn't anticipated.</p>
+
+      <h2>Life in Mauritius &amp; Melbourne</h2>
+      <p>I grew up in Mauritius in a bilingual environment, then moved to Melbourne to work as an accountant. The work was stable, but something kept nagging at me. I'd spend evenings reading about how apps were built, watching tutorials, writing small scripts. It started as a hobby, but the more I did it, the more obvious it became that I wanted to make it my career.</p>
+
+      <h2>The Decision to Switch</h2>
+      <p>Deciding to pivot wasn't a snap decision. I weighed the risk — giving up a stable career, moving countries, going back to school. But I kept coming back to the same question: <strong>how would I feel in ten years if I never tried?</strong></p>
+      <p>I enrolled in the Computer Programming diploma at <strong>Seneca College in Toronto</strong> and treated the move as a clean slate.</p>
+
+      <h2>What the Transition Actually Looked Like</h2>
+      <p>The first semester was humbling. But accounting had taught me one thing well: <strong>attention to detail and methodical problem-solving</strong>. Once I applied that mindset to debugging and system design, things started clicking. I also started building real projects outside class as early as possible — RememberBirthdays, GymLift, and the UFC Store gave me the reps that coursework alone couldn't.</p>
+
+      <h2>The Unexpected Advantages</h2>
+      <p>Understanding how data flows through a financial system made database design intuitive. Writing audit trails in accounting translated naturally to thinking about data integrity in software. And understanding business constraints means I can have better conversations about <em>why</em> a feature matters, not just how to build it.</p>
+
+      <h2>Where I Am Now</h2>
+      <p>I'm currently interning with the Ontario Government, working with .NET, C#, Python, LangChain, and Azure DevOps. I look forward to showing up every day.</p>
+      <p>If you're considering a similar pivot: <strong>do it seriously</strong>. Build things. Ship things. Don't wait until you feel ready — you'll feel ready by building.</p>
+    </div>
+
+    <hr style="border:none;height:1px;background:var(--border);margin:3rem 0 2rem;" />
+    <a href="../blog.html" style="display:inline-flex;align-items:center;gap:.3rem;color:#475569;font-size:.82rem;font-weight:500;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--accent-light)'" onmouseout="this.style.color='#475569'">← Back to Blog</a>
+  </div>
+
+  <footer style="position:relative;z-index:10;border-top:1px solid var(--border);padding:1.5rem;text-align:center;">
+    <p style="font-size:.78rem;color:#334155;">© 2025 Keshav Callychurn</p>
+  </footer>
+</body>
+</html>
