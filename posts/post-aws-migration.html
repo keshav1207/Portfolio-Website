@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Migrating a Full-Stack App to AWS — Keshav Callychurn</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: #0f1117; color: #e2e8f0; }
+    body::before { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(99,102,241,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,.04) 1px, transparent 1px); background-size: 48px 48px; }
+    :root { --accent: #6366f1; --accent-light: #818cf8; --card: #161b27; --border: rgba(255,255,255,.07); }
+    .nav-link { color: #94a3b8; font-size: .875rem; font-weight: 500; text-decoration: none; transition: color .2s; }
+    .nav-link:hover { color: #e2e8f0; }
+    .prose { color: #94a3b8; font-size: .975rem; line-height: 1.85; }
+    .prose p { margin-bottom: 1.25rem; }
+    .prose h2 { font-size: 1.2rem; font-weight: 700; color: #f1f5f9; margin: 2.5rem 0 .9rem; letter-spacing: -.01em; }
+    .prose h3 { font-size: 1rem; font-weight: 700; color: #e2e8f0; margin: 1.75rem 0 .6rem; }
+    .prose strong { color: #e2e8f0; font-weight: 600; }
+    .prose em { color: #94a3b8; font-style: italic; }
+    .prose ul { margin: .75rem 0 1.25rem 1.25rem; list-style: disc; }
+    .prose ul li { margin-bottom: .4rem; }
+    .prose pre {
+      background: #0d1117;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-size: .82rem;
+      line-height: 1.6;
+      margin: 1rem 0 1.5rem;
+      font-family: 'Fira Code', 'Cascadia Code', monospace;
+      color: #a5b4fc;
+    }
+    .prose code {
+      font-family: 'Fira Code', 'Cascadia Code', monospace;
+      font-size: .85em;
+      background: rgba(99,102,241,.1);
+      border: 1px solid rgba(99,102,241,.2);
+      border-radius: 4px;
+      padding: .1em .35em;
+      color: #a5b4fc;
+    }
+    .prose pre code { background: none; border: none; padding: 0; font-size: inherit; color: inherit; }
+    .arch-box {
+      background: #0d1117;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 1rem 0 1.5rem;
+      font-family: 'Fira Code', 'Cascadia Code', monospace;
+      font-size: .78rem;
+      line-height: 1.8;
+      color: #64748b;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .arch-box .hl { color: #a5b4fc; }
+    .problem-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.6rem;
+      height: 1.6rem;
+      border-radius: 50%;
+      background: rgba(99,102,241,.15);
+      border: 1px solid rgba(99,102,241,.3);
+      color: #a5b4fc;
+      font-size: .75rem;
+      font-weight: 700;
+      margin-right: .5rem;
+      flex-shrink: 0;
+    }
+    .problem-header {
+      display: flex;
+      align-items: center;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin: 2.5rem 0 .9rem;
+    }
+    .callout {
+      background: rgba(99,102,241,.07);
+      border-left: 3px solid rgba(99,102,241,.5);
+      border-radius: 0 8px 8px 0;
+      padding: .75rem 1rem;
+      margin: 1rem 0 1.25rem;
+      font-size: .9rem;
+      color: #94a3b8;
+    }
+    .callout strong { color: #a5b4fc; }
+  </style>
+</head>
+<body>
+  <nav style="position:fixed;top:0;width:100%;z-index:100;background:rgba(15,17,23,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:.75rem 0;">
+    <div style="max-width:64rem;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;">
+      <a href="../index.html" style="font-weight:700;font-size:1.1rem;color:#e2e8f0;text-decoration:none;">Keshav<span style="color:var(--accent-light)">.</span></a>
+      <nav style="display:flex;align-items:center;gap:2rem;">
+        <a href="../index.html#projects" class="nav-link">Projects</a>
+        <a href="../blog.html" class="nav-link">Blog</a>
+        <a href="../index.html#contact" style="padding:.4rem 1rem;border-radius:8px;background:var(--accent);color:#fff;font-size:.85rem;font-weight:600;text-decoration:none;">Contact</a>
+      </nav>
+    </div>
+  </nav>
+
+  <div style="position:relative;z-index:10;max-width:42rem;margin:0 auto;padding:7rem 1.5rem 5rem;">
+    <a href="../blog.html" style="display:inline-flex;align-items:center;gap:.3rem;color:#475569;font-size:.82rem;font-weight:500;text-decoration:none;margin-bottom:2rem;transition:color .2s;" onmouseover="this.style.color='var(--accent-light)'" onmouseout="this.style.color='#475569'">← Back to Blog</a>
+
+    <div style="margin-bottom:2.5rem;">
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;">
+        <span style="display:inline-block;padding:.2rem .65rem;border-radius:999px;font-size:.7rem;font-weight:500;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);color:#a5b4fc;">AWS</span>
+        <span style="font-size:.78rem;color:#475569;">June 7, 2025 · 12 min read</span>
+      </div>
+      <h1 style="font-size:clamp(1.6rem,4vw,2.1rem);font-weight:800;letter-spacing:-.02em;line-height:1.2;color:#f8fafc;margin-bottom:.75rem;">Migrating a Full-Stack App to AWS: What Tutorials Don't Teach You</h1>
+      <p style="color:#64748b;font-size:.9rem;">By Keshav Callychurn</p>
+    </div>
+
+    <hr style="border:none;height:1px;background:var(--border);margin-bottom:2.5rem;" />
+
+    <div class="prose">
+      <p>After completing my AWS Cloud Practitioner certification, I wanted to go beyond multiple-choice questions and deploy something real. This is the story of migrating <strong>RememberBirthdays</strong> — a birthday reminder app — from Netlify and Railway to AWS, and every problem I hit along the way.</p>
+
+      <h2>What I Built</h2>
+      <p>RememberBirthdays lets you store birthdays and receive reminders so you never forget the people who matter. The stack:</p>
+      <ul>
+        <li><strong>Frontend:</strong> React + TypeScript</li>
+        <li><strong>Backend:</strong> Java Spring Boot</li>
+        <li><strong>Auth:</strong> Keycloak (OAuth2 / OIDC)</li>
+        <li><strong>Database:</strong> PostgreSQL</li>
+        <li><strong>Containerisation:</strong> Docker Compose</li>
+      </ul>
+      <p>Previously deployed on Netlify (frontend) and Railway (backend + Keycloak). The goal was to migrate everything to AWS and understand what real cloud infrastructure looks like.</p>
+
+      <h2>Architecture</h2>
+      <p>The final architecture has three layers: a public CloudFront edge, a compute layer in EC2 running Docker, and a managed database in a private subnet.</p>
+
+      <div class="arch-box"><span class="hl">User (Browser)</span>
+      | HTTPS
+      v
+<span class="hl">CloudFront ×3</span>   [Frontend CDN]  [Auth Proxy]  [API Proxy]
+      |                |               |
+      v                v               v
+  <span class="hl">S3 Bucket</span>      <span class="hl">EC2 t3.small</span> (Docker Compose)
+ (React build)   +---------------------------+
+  Private / OAC  |  <span class="hl">Keycloak</span>  &lt;-&gt;  <span class="hl">Spring</span>    |  Public Subnet
+                 |  (OAuth2)       Boot API   |
+                 +----------------|----------+
+                                  | JDBC
+                                  v
+                        <span class="hl">RDS PostgreSQL</span>         Private Subnet
+                        db.t3.micro
+                        app_db | keycloak_db</div>
+
+      <h2>Key Architectural Decisions</h2>
+
+      <h3>RDS over Docker PostgreSQL</h3>
+      <p>Running Postgres in a container on EC2 is cheaper, but RDS gives automated backups and managed patching. It also demonstrates understanding of managed cloud services, which is how production systems are built.</p>
+
+      <h3>No load balancer</h3>
+      <p>With fewer than 5 users per month, an ALB adds ~$16/month for zero benefit. I know exactly where the scaling bottleneck is and what the upgrade path looks like.</p>
+
+      <h3>Kept Keycloak, didn't switch to Cognito</h3>
+      <p>Keycloak adds operational overhead but it's portable — not tied to AWS. A deliberate trade-off between convenience and vendor lock-in.</p>
+
+      <h3>EC2 in public subnet, RDS in private subnet</h3>
+      <p>The EC2 needs to be reachable from CloudFront. The database should never be reachable from the internet. Only Spring Boot can connect to RDS, through an explicit security group rule.</p>
+
+      <h2>The Problems That Actually Taught Me Something</h2>
+
+      <div class="problem-header"><span class="problem-num">1</span>EC2 Ran Out of Memory on First Boot</div>
+      <p>I started with a <code>t2.micro</code> — 1 GB RAM. Keycloak alone needs approximately 600 MB at startup. Spring Boot needs another 300–400 MB. The containers were crashing silently with no obvious error — just services that never came up.</p>
+      <div class="callout"><strong>Fix:</strong> Resized to <code>t3.small</code> (2 GB RAM). Both containers started cleanly.</div>
+      <p>Understand your workload's memory requirements before choosing an instance type. Keycloak is a full identity provider, not lightweight middleware. Check container minimum requirements before you deploy.</p>
+
+      <div class="problem-header"><span class="problem-num">2</span>RDS Was Unreachable from EC2</div>
+      <p>The RDS instance existed. The JDBC connection string was correct. Spring Boot still threw <code>connection refused</code> on every startup.</p>
+      <p><strong>Root cause:</strong> The RDS security group had no inbound rule allowing traffic from the EC2. In AWS, resources cannot communicate unless you explicitly configure security groups to permit it. The database was sitting in a private subnet with no path from the EC2 to reach it.</p>
+      <div class="callout"><strong>Fix:</strong> Added an inbound rule to the RDS security group: allow port 5432 (PostgreSQL) from the EC2's security group.</div>
+      <p>AWS security groups are a whitelist. Nothing talks to anything unless you explicitly allow it. This is good — defence in depth — but every connection must be consciously permitted.</p>
+
+      <div class="problem-header"><span class="problem-num">3</span>JWT Authentication Rejected Every Request</div>
+      <p>Every authenticated API call returned <code>401 Unauthorized</code>. The tokens looked valid. Keycloak was running. The error was <code>JwtDecoderInitializationException</code>.</p>
+      <p><strong>Root cause — two separate but related problems:</strong></p>
+      <p>First, Keycloak was issuing tokens with an issuer claim (<code>iss</code>) pointing to its public EC2 URL. Spring Boot validates tokens by fetching Keycloak's public keys from an issuer URI. The <code>iss</code> claim in the token and the configured issuer URI have to match exactly — they didn't.</p>
+      <p>Second, from inside a Docker container on EC2, the host's public IP address often isn't routable back to the host. Spring Boot couldn't even reach Keycloak at the public IP to fetch its public keys.</p>
+      <div class="callout"><strong>Fix:</strong> A custom <code>JwtDecoder</code> that fetches JWKS keys from Keycloak's internal Docker hostname (always reachable) while skipping issuer URI validation entirely. Token signatures are still verified — we're not skipping security, just the URL matching check.</div>
+<pre><code>@Value("${keycloak.jwks-uri:http://keycloak:8080/realms/remember-birthdays/protocol/openid-connect/certs}")
+private String jwksUri;
+
+@Bean
+public JwtDecoder jwtDecoder() {
+    // Fetches JWKS from internal Docker hostname — always reachable
+    // withJwkSetUri() validates signature but skips issuer claim check
+    return NimbusJwtDecoder.withJwkSetUri(jwksUri).build();
+}</code></pre>
+      <p>The proper production fix: a domain name with HTTPS so Keycloak's internal and external hostname are identical. When <code>KC_HOSTNAME</code> matches the token's <code>iss</code> claim and is reachable both internally and externally, the mismatch disappears entirely.</p>
+
+      <div class="problem-header"><span class="problem-num">4</span>HTTPS Blocked Every API Call</div>
+      <p>The frontend loads over HTTPS via CloudFront. After login, every API call to the backend and every request to Keycloak's token endpoint failed silently.</p>
+      <p><strong>Root cause:</strong> Mixed content. Browsers enforce a strict rule — an HTTPS page cannot make requests to HTTP resources. There is no workaround, no flag to disable it, no exception. You fix it or it doesn't work.</p>
+      <div class="callout"><strong>Fix:</strong> Created separate CloudFront distributions for Keycloak and the API. CloudFront handles HTTPS termination — the browser talks to CloudFront over HTTPS, CloudFront forwards to the EC2 over HTTP internally. The browser never sees the HTTP leg.</div>
+      <p>One non-obvious detail: CloudFront only supports HTTP origins on ports 80 and 8080. Keycloak was on port 8081. Moving Keycloak to port 80 (free since Spring Boot uses 8080) resolved this. Caching was disabled on both distributions — Keycloak and the API return dynamic responses that must never be cached.</p>
+      <p>The proper production fix: a custom domain with an ALB and ACM certificate. The ALB handles HTTPS termination cleanly, routes to both services, and eliminates the need for multiple CloudFront distributions.</p>
+
+      <div class="problem-header"><span class="problem-num">5</span>CORS Blocked API Calls from the Frontend</div>
+      <p>After fixing HTTPS, the browser was now reaching the backend but CORS headers were missing — the backend wasn't explicitly allowing the CloudFront origin.</p>
+      <div class="callout"><strong>Fix:</strong> Spring Security CORS configuration reading the allowed origin from an environment variable (<code>FRONTEND_URL</code>), so the same codebase works locally and in production without hardcoded URLs.</div>
+<pre><code>@Value("${frontend.url}")
+private String frontendUrl;
+
+@Bean
+public CorsConfigurationSource corsConfiguration() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOriginPatterns(
+        List.of(frontendUrl, "http://localhost:3000")
+    );
+    configuration.setAllowedMethods(
+        Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")
+    );
+    configuration.setAllowCredentials(true);
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+}</code></pre>
+
+      <h2>What's Not Production-Grade</h2>
+      <p>Being transparent about trade-offs matters. Here is what I would change with more time and a custom domain:</p>
+      <ul>
+        <li>Three CloudFront distributions as HTTPS proxies is a workaround for not having a custom domain. In production: one domain, one ALB, one ACM certificate.</li>
+        <li>Skipping JWT issuer validation works but removes a security layer. The proper fix is making Keycloak's internal and external hostname identical.</li>
+        <li>Keycloak in <code>start-dev</code> mode is development configuration. Production Keycloak uses <code>start</code> mode with proper TLS.</li>
+      </ul>
+      <p>I know what the upgrade path looks like. That's the point of this exercise.</p>
+
+      <h2>What's Next</h2>
+      <ul>
+        <li><strong>Testing:</strong> JUnit 5 + Mockito, React Testing Library</li>
+        <li><strong>CI/CD:</strong> GitHub Actions pipelines for automated build, test, and deploy</li>
+        <li><strong>Infrastructure as Code:</strong> Terraform to codify everything built manually</li>
+        <li><strong>Monitoring:</strong> Prometheus + Spring Boot Actuator, Grafana dashboards</li>
+      </ul>
+      <p>Each phase will be documented.</p>
+    </div>
+
+    <hr style="border:none;height:1px;background:var(--border);margin:3rem 0 2rem;" />
+    <a href="../blog.html" style="display:inline-flex;align-items:center;gap:.3rem;color:#475569;font-size:.82rem;font-weight:500;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='var(--accent-light)'" onmouseout="this.style.color='#475569'">← Back to Blog</a>
+  </div>
+
+  <footer style="position:relative;z-index:10;border-top:1px solid var(--border);padding:1.5rem;text-align:center;">
+    <p style="font-size:.78rem;color:#334155;">© 2025 Keshav Callychurn</p>
+  </footer>
+</body>
+</html>
