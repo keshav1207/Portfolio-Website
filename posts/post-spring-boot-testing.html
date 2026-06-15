@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>How I Added Unit and Integration Tests to My Spring Boot App — Keshav Callychurn</title>
+  <title>How I Added Unit and Integration Tests to My Spring Boot App | Keshav Callychurn</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
@@ -101,36 +101,36 @@
         <span style="display:inline-block;padding:.2rem .65rem;border-radius:999px;font-size:.7rem;font-weight:500;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);color:#a5b4fc;">Java</span>
         <span style="font-size:.78rem;color:#475569;">June 7, 2026 · 9 min read</span>
       </div>
-      <h1 style="font-size:clamp(1.6rem,4vw,2.1rem);font-weight:800;letter-spacing:-.02em;line-height:1.2;color:#f8fafc;margin-bottom:.75rem;">How I Added Unit and Integration Tests to My Spring Boot App — A Junior Dev's Honest Guide</h1>
-      <p style="color:#94a3b8;font-size:.95rem;line-height:1.6;margin-top:.75rem;">JUnit 5, Mockito, MockMvc, Spring Security Test, and <code style="font-size:.85em;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);border-radius:4px;padding:.1em .35em;color:#a5b4fc;">@DataJpaTest</code> — what each one does and why I used it</p>
+      <h1 style="font-size:clamp(1.6rem,4vw,2.1rem);font-weight:800;letter-spacing:-.02em;line-height:1.2;color:#f8fafc;margin-bottom:.75rem;">How I Added Unit and Integration Tests to My Spring Boot App: A Junior Dev's Honest Guide</h1>
+      <p style="color:#94a3b8;font-size:.95rem;line-height:1.6;margin-top:.75rem;">JUnit 5, Mockito, MockMvc, Spring Security Test, and <code style="font-size:.85em;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);border-radius:4px;padding:.1em .35em;color:#a5b4fc;">@DataJpaTest</code>: what each one does and why I used it</p>
       <p style="color:#64748b;font-size:.9rem;margin-top:.75rem;">By Keshav Callychurn</p>
     </div>
 
     <hr style="border:none;height:1px;background:var(--border);margin-bottom:2.5rem;" />
 
     <div class="prose">
-      <p>I built a full-stack birthday reminder app called <strong>RememberBirthdays</strong> using Spring Boot, Keycloak for authentication, PostgreSQL, and React. It's been deployed on AWS and works well — but for a long time it had exactly one test: the auto-generated <code>contextLoads()</code> that ships with every Spring Boot project.</p>
+      <p>I built a full-stack birthday reminder app called <strong>RememberBirthdays</strong> using Spring Boot, Keycloak for authentication, PostgreSQL, and React. It's been deployed on AWS and works well, but for a long time it had exactly one test: the auto-generated <code>contextLoads()</code> that ships with every Spring Boot project.</p>
       <p>Not great for a portfolio. So I spent time properly adding tests across all three layers of the application. This article walks through what I built, the technologies I used, and the challenges I ran into along the way.</p>
 
       <h2>The Architecture</h2>
       <p>The backend is a layered Spring Boot REST API:</p>
       <ul>
-        <li><strong>Controller layer</strong> — handles HTTP requests and security rules</li>
-        <li><strong>Service layer</strong> — contains business logic</li>
-        <li><strong>Repository layer</strong> — talks to PostgreSQL via Spring Data JPA</li>
+        <li><strong>Controller layer</strong>: handles HTTP requests and security rules</li>
+        <li><strong>Service layer</strong>: contains business logic</li>
+        <li><strong>Repository layer</strong>: talks to PostgreSQL via Spring Data JPA</li>
       </ul>
       <p>Each layer needed a different type of test.</p>
 
       <h2>The Technologies</h2>
       <ul>
-        <li><strong>JUnit 5</strong> — the test runner. Every test method is annotated with <code>@Test</code>.</li>
-        <li><strong>Mockito</strong> — the mocking framework. Replaces real dependencies with fakes.</li>
-        <li><strong>Spring Boot Test / MockMvc</strong> — for testing the web layer including HTTP status codes and JSON responses.</li>
-        <li><strong>Spring Security Test</strong> — provides the <code>jwt()</code> helper for testing secured endpoints.</li>
-        <li><strong>@DataJpaTest with H2</strong> — runs repository tests against an in-memory database.</li>
+        <li><strong>JUnit 5</strong>: the test runner. Every test method is annotated with <code>@Test</code>.</li>
+        <li><strong>Mockito</strong>: the mocking framework. Replaces real dependencies with fakes.</li>
+        <li><strong>Spring Boot Test / MockMvc</strong>: for testing the web layer including HTTP status codes and JSON responses.</li>
+        <li><strong>Spring Security Test</strong>: provides the <code>jwt()</code> helper for testing secured endpoints.</li>
+        <li><strong>@DataJpaTest with H2</strong>: runs repository tests against an in-memory database.</li>
       </ul>
 
-      <div class="layer-header"><span class="layer-num">1</span>Layer 1 — Service Unit Tests</div>
+      <div class="layer-header"><span class="layer-num">1</span>Layer 1: Service Unit Tests</div>
       <p>Service tests are pure unit tests. No Spring context is loaded, so they run in milliseconds.</p>
       <p>The pattern is simple: mock every dependency with <code>@Mock</code>, inject them into the real class with <code>@InjectMocks</code>, and then call the method you want to test.</p>
 <pre><code>@ExtendWith(MockitoExtension.class)
@@ -139,17 +139,17 @@ class UserServiceTest {
     @InjectMocks UserService userService;
     // ...
 }</code></pre>
-      <p>One challenge I hit: <code>PersonService</code> reads the current logged-in user from <code>SecurityContextHolder</code> — a static global. In a unit test there is no HTTP request, so <code>SecurityContextHolder</code> is empty and the service crashes immediately.</p>
+      <p>One challenge I hit: <code>PersonService</code> reads the current logged-in user from <code>SecurityContextHolder</code> a static global. In a unit test there is no HTTP request, so <code>SecurityContextHolder</code> is empty and the service crashes immediately.</p>
       <div class="callout"><strong>Fix:</strong> Manually place a fake <code>JwtAuthenticationToken</code> into the <code>SecurityContextHolder</code> before each test and clear it in <code>@AfterEach</code>.</div>
       <p>This taught me that testing code that depends on static state requires you to manage that state yourself.</p>
 
-      <div class="layer-header"><span class="layer-num">2</span>Layer 2 — Controller Slice Tests</div>
-      <p>Controller tests use <code>@WebMvcTest</code>, which loads only the web layer — controllers, security config, and filters. No services or repositories are loaded (you <code>@MockBean</code> them).</p>
+      <div class="layer-header"><span class="layer-num">2</span>Layer 2: Controller Slice Tests</div>
+      <p>Controller tests use <code>@WebMvcTest</code>, which loads only the web layer: controllers, security config, and filters. No services or repositories are loaded (you <code>@MockBean</code> them).</p>
       <p>The biggest challenge here was Keycloak. My <code>SecurityConfig</code> declares a <code>JwtDecoder</code> bean that connects to the Keycloak JWKS endpoint on startup. In a test environment there is no Keycloak server, so the context would crash on startup.</p>
       <p>Two things were needed:</p>
       <ul>
-        <li><code>@MockBean JwtDecoder</code> — overrides the real bean so Spring does not try to connect to Keycloak</li>
-        <li><code>jwt()</code> from Spring Security Test — injects a fake authentication into the security context for each request</li>
+        <li><code>@MockBean JwtDecoder</code> overrides the real bean so Spring does not try to connect to Keycloak</li>
+        <li><code>jwt()</code> from Spring Security Test: injects a fake authentication into the security context for each request</li>
       </ul>
       <p>With these in place I could test real security behaviour including:</p>
       <ul>
@@ -159,10 +159,10 @@ class UserServiceTest {
       </ul>
       <div class="callout"><strong>This was the most valuable part of the whole exercise.</strong> Before writing these tests I thought my security logic worked because I had manually tested it. The tests forced me to verify every edge case systematically.</div>
 
-      <div class="layer-header"><span class="layer-num">3</span>Layer 3 — Repository Slice Tests</div>
+      <div class="layer-header"><span class="layer-num">3</span>Layer 3: Repository Slice Tests</div>
       <p>Repository tests use <code>@DataJpaTest</code>, which automatically replaces your PostgreSQL datasource with H2 in-memory and creates all your JPA entity tables from your <code>@Entity</code> classes.</p>
-      <p>I used <code>TestEntityManager</code> to insert test data directly into H2, bypassing the repository under test. This separation is important — if you use the repository to both set up and test, you cannot be sure where a failure comes from.</p>
-      <p>The tests verify that <code>findAllByUser()</code> correctly returns only the persons belonging to a specific user — which is a core piece of logic that ensures users can only see their own data.</p>
+      <p>I used <code>TestEntityManager</code> to insert test data directly into H2, bypassing the repository under test. This separation is important: if you use the repository to both set up and test, you cannot be sure where a failure comes from.</p>
+      <p>The tests verify that <code>findAllByUser()</code> correctly returns only the persons belonging to a specific user which is a core piece of logic that ensures users can only see their own data.</p>
 
       <h2>Key Lessons</h2>
       <ul>
@@ -173,7 +173,7 @@ class UserServiceTest {
       </ul>
 
       <h2>Conclusion</h2>
-      <p>18 tests across 5 files. Every test meaningful, every test green. If you're building a Spring Boot portfolio project and have only the auto-generated <code>contextLoads()</code> test — I hope this gives you a clear path forward.</p>
+      <p>18 tests across 5 files. Every test meaningful, every test green. If you're building a Spring Boot portfolio project and have only the auto-generated <code>contextLoads()</code> test I hope this gives you a clear path forward.</p>
       <p>The full project is on my GitHub. Feel free to reach out with any questions.</p>
 
       <div class="tag-list">
@@ -196,4 +196,4 @@ class UserServiceTest {
     <p style="font-size:.78rem;color:#334155;">© 2025 Keshav Callychurn</p>
   </footer>
 </body>
-</html>
+</ht

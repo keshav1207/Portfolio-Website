@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Migrating a Full-Stack App to AWS — Keshav Callychurn</title>
+  <title>Migrating a Full-Stack App to AWS | Keshav Callychurn</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
@@ -120,7 +120,7 @@
     <hr style="border:none;height:1px;background:var(--border);margin-bottom:2.5rem;" />
 
     <div class="prose">
-      <p>After completing my AWS Cloud Practitioner certification, I wanted to go beyond multiple-choice questions and deploy something real. This is the story of migrating <strong>RememberBirthdays</strong> — a birthday reminder app — from Netlify and Railway to AWS, and every problem I hit along the way.</p>
+      <p>After completing my AWS Cloud Practitioner certification, I wanted to go beyond multiple-choice questions and deploy something real. This is the story of migrating <strong>RememberBirthdays</strong>, a birthday reminder app, from Netlify and Railway to AWS, and every problem I hit along the way.</p>
 
       <h2>What I Built</h2>
       <p>RememberBirthdays lets you store birthdays and receive reminders so you never forget the people who matter. The stack:</p>
@@ -162,7 +162,7 @@
       <p>With fewer than 5 users per month, an ALB adds ~$16/month for zero benefit. I know exactly where the scaling bottleneck is and what the upgrade path looks like.</p>
 
       <h3>Kept Keycloak, didn't switch to Cognito</h3>
-      <p>Keycloak adds operational overhead but it's portable — not tied to AWS. A deliberate trade-off between convenience and vendor lock-in.</p>
+      <p>Keycloak adds operational overhead but it's portable, not tied to AWS. A deliberate trade-off between convenience and vendor lock-in.</p>
 
       <h3>EC2 in public subnet, RDS in private subnet</h3>
       <p>The EC2 needs to be reachable from CloudFront. The database should never be reachable from the internet. Only Spring Boot can connect to RDS, through an explicit security group rule.</p>
@@ -170,7 +170,7 @@
       <h2>The Problems That Actually Taught Me Something</h2>
 
       <div class="problem-header"><span class="problem-num">1</span>EC2 Ran Out of Memory on First Boot</div>
-      <p>I started with a <code>t2.micro</code> — 1 GB RAM. Keycloak alone needs approximately 600 MB at startup. Spring Boot needs another 300–400 MB. The containers were crashing silently with no obvious error — just services that never came up.</p>
+      <p>I started with a <code>t2.micro</code> (1 GB RAM). Keycloak alone needs approximately 600 MB at startup. Spring Boot needs another 300–400 MB. The containers were crashing silently with no obvious error, just services that never came up.</p>
       <div class="callout"><strong>Fix:</strong> Resized to <code>t3.small</code> (2 GB RAM). Both containers started cleanly.</div>
       <p>Understand your workload's memory requirements before choosing an instance type. Keycloak is a full identity provider, not lightweight middleware. Check container minimum requirements before you deploy.</p>
 
@@ -178,20 +178,20 @@
       <p>The RDS instance existed. The JDBC connection string was correct. Spring Boot still threw <code>connection refused</code> on every startup.</p>
       <p><strong>Root cause:</strong> The RDS security group had no inbound rule allowing traffic from the EC2. In AWS, resources cannot communicate unless you explicitly configure security groups to permit it. The database was sitting in a private subnet with no path from the EC2 to reach it.</p>
       <div class="callout"><strong>Fix:</strong> Added an inbound rule to the RDS security group: allow port 5432 (PostgreSQL) from the EC2's security group.</div>
-      <p>AWS security groups are a whitelist. Nothing talks to anything unless you explicitly allow it. This is good — defence in depth — but every connection must be consciously permitted.</p>
+      <p>AWS security groups are a whitelist. Nothing talks to anything unless you explicitly allow it. This is good defence in depth, but every connection must be consciously permitted.</p>
 
       <div class="problem-header"><span class="problem-num">3</span>JWT Authentication Rejected Every Request</div>
       <p>Every authenticated API call returned <code>401 Unauthorized</code>. The tokens looked valid. Keycloak was running. The error was <code>JwtDecoderInitializationException</code>.</p>
-      <p><strong>Root cause — two separate but related problems:</strong></p>
-      <p>First, Keycloak was issuing tokens with an issuer claim (<code>iss</code>) pointing to its public EC2 URL. Spring Boot validates tokens by fetching Keycloak's public keys from an issuer URI. The <code>iss</code> claim in the token and the configured issuer URI have to match exactly — they didn't.</p>
+      <p><strong>Root cause: two separate but related problems:</strong></p>
+      <p>First, Keycloak was issuing tokens with an issuer claim (<code>iss</code>) pointing to its public EC2 URL. Spring Boot validates tokens by fetching Keycloak's public keys from an issuer URI. The <code>iss</code> claim in the token and the configured issuer URI have to match exactly; they didn't.</p>
       <p>Second, from inside a Docker container on EC2, the host's public IP address often isn't routable back to the host. Spring Boot couldn't even reach Keycloak at the public IP to fetch its public keys.</p>
-      <div class="callout"><strong>Fix:</strong> A custom <code>JwtDecoder</code> that fetches JWKS keys from Keycloak's internal Docker hostname (always reachable) while skipping issuer URI validation entirely. Token signatures are still verified — we're not skipping security, just the URL matching check.</div>
+      <div class="callout"><strong>Fix:</strong> A custom <code>JwtDecoder</code> that fetches JWKS keys from Keycloak's internal Docker hostname (always reachable) while skipping issuer URI validation entirely. Token signatures are still verified; we're not skipping security, just the URL matching check.</div>
 <pre><code>@Value("${keycloak.jwks-uri:http://keycloak:8080/realms/remember-birthdays/protocol/openid-connect/certs}")
 private String jwksUri;
 
 @Bean
 public JwtDecoder jwtDecoder() {
-    // Fetches JWKS from internal Docker hostname — always reachable
+    // Fetches JWKS from internal Docker hostname (always reachable)
     // withJwkSetUri() validates signature but skips issuer claim check
     return NimbusJwtDecoder.withJwkSetUri(jwksUri).build();
 }</code></pre>
@@ -199,13 +199,13 @@ public JwtDecoder jwtDecoder() {
 
       <div class="problem-header"><span class="problem-num">4</span>HTTPS Blocked Every API Call</div>
       <p>The frontend loads over HTTPS via CloudFront. After login, every API call to the backend and every request to Keycloak's token endpoint failed silently.</p>
-      <p><strong>Root cause:</strong> Mixed content. Browsers enforce a strict rule — an HTTPS page cannot make requests to HTTP resources. There is no workaround, no flag to disable it, no exception. You fix it or it doesn't work.</p>
-      <div class="callout"><strong>Fix:</strong> Created separate CloudFront distributions for Keycloak and the API. CloudFront handles HTTPS termination — the browser talks to CloudFront over HTTPS, CloudFront forwards to the EC2 over HTTP internally. The browser never sees the HTTP leg.</div>
-      <p>One non-obvious detail: CloudFront only supports HTTP origins on ports 80 and 8080. Keycloak was on port 8081. Moving Keycloak to port 80 (free since Spring Boot uses 8080) resolved this. Caching was disabled on both distributions — Keycloak and the API return dynamic responses that must never be cached.</p>
+      <p><strong>Root cause:</strong> Mixed content. Browsers enforce a strict rule: an HTTPS page cannot make requests to HTTP resources. There is no workaround, no flag to disable it, no exception. You fix it or it doesn't work.</p>
+      <div class="callout"><strong>Fix:</strong> Created separate CloudFront distributions for Keycloak and the API. CloudFront handles HTTPS termination: the browser talks to CloudFront over HTTPS, CloudFront forwards to the EC2 over HTTP internally. The browser never sees the HTTP leg.</div>
+      <p>One non-obvious detail: CloudFront only supports HTTP origins on ports 80 and 8080. Keycloak was on port 8081. Moving Keycloak to port 80 (free since Spring Boot uses 8080) resolved this. Caching was disabled on both distributions: Keycloak and the API return dynamic responses that must never be cached.</p>
       <p>The proper production fix: a custom domain with an ALB and ACM certificate. The ALB handles HTTPS termination cleanly, routes to both services, and eliminates the need for multiple CloudFront distributions.</p>
 
       <div class="problem-header"><span class="problem-num">5</span>CORS Blocked API Calls from the Frontend</div>
-      <p>After fixing HTTPS, the browser was now reaching the backend but CORS headers were missing — the backend wasn't explicitly allowing the CloudFront origin.</p>
+      <p>After fixing HTTPS, the browser was now reaching the backend but CORS headers were missing: the backend wasn't explicitly allowing the CloudFront origin.</p>
       <div class="callout"><strong>Fix:</strong> Spring Security CORS configuration reading the allowed origin from an environment variable (<code>FRONTEND_URL</code>), so the same codebase works locally and in production without hardcoded URLs.</div>
 <pre><code>@Value("${frontend.url}")
 private String frontendUrl;

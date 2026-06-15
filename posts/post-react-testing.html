@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Adding React Testing Library to a CRA Project in 2025 — Keshav Callychurn</title>
+  <title>Adding React Testing Library to a CRA Project in 2026 | Keshav Callychurn</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
@@ -100,7 +100,7 @@
         <span style="display:inline-block;padding:.2rem .65rem;border-radius:999px;font-size:.7rem;font-weight:500;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);color:#a5b4fc;">React</span>
         <span style="font-size:.78rem;color:#475569;">June 15, 2026 · 8 min read</span>
       </div>
-      <h1 style="font-size:clamp(1.6rem,4vw,2.1rem);font-weight:800;letter-spacing:-.02em;line-height:1.2;color:#f8fafc;margin-bottom:.75rem;">Adding React Testing Library to a CRA Project in 2026 — The Challenges Nobody Warns You About</h1>
+      <h1 style="font-size:clamp(1.6rem,4vw,2.1rem);font-weight:800;letter-spacing:-.02em;line-height:1.2;color:#f8fafc;margin-bottom:.75rem;">Adding React Testing Library to a CRA Project in 2026: The Challenges Nobody Warns You About</h1>
       <p style="color:#94a3b8;font-size:.95rem;line-height:1.6;margin-top:.75rem;">ESM module conflicts, Keycloak auth mocking, and why testing from the user's perspective changes how you think about components</p>
       <p style="color:#64748b;font-size:.9rem;margin-top:.75rem;">By Keshav Callychurn</p>
     </div>
@@ -113,10 +113,10 @@
 
       <h2>The Testing Stack</h2>
       <ul>
-        <li><strong>Jest</strong> — test runner, built into Create React App</li>
-        <li><strong>React Testing Library</strong> — renders components and lets you query what the user sees</li>
-        <li><strong>@testing-library/jest-dom</strong> — adds readable matchers like <code>toBeInTheDocument()</code></li>
-        <li><strong>@testing-library/user-event</strong> — simulates realistic user interactions</li>
+        <li><strong>Jest</strong>: test runner, built into Create React App</li>
+        <li><strong>React Testing Library</strong>: renders components and lets you query what the user sees</li>
+        <li><strong>@testing-library/jest-dom</strong>: adds readable matchers like <code>toBeInTheDocument()</code></li>
+        <li><strong>@testing-library/user-event</strong>: simulates realistic user interactions</li>
       </ul>
       <p>All of these were already installed in my <code>package.json</code>. The challenge was getting them to actually work together.</p>
 
@@ -124,17 +124,17 @@
       <p>Jest runs in Node.js using CommonJS. Axios v1.x and react-router-dom v7 use ES modules internally. This mismatch caused three different errors before I could run a single test.</p>
       <p>The fixes required in <code>package.json</code>:</p>
       <ul>
-        <li><strong>transformIgnorePatterns</strong> — tell Jest to transform axios through Babel instead of skipping it</li>
-        <li><strong>moduleNameMapper</strong> — explicitly point Jest to the CommonJS version of react-router-dom and react-router because their exports field confused Jest's resolver</li>
+        <li><strong>transformIgnorePatterns</strong>: tell Jest to transform axios through Babel instead of skipping it</li>
+        <li><strong>moduleNameMapper</strong>: explicitly point Jest to the CommonJS version of react-router-dom and react-router because their exports field confused Jest's resolver</li>
       </ul>
       <p>And in <code>setupTests.ts</code>:</p>
       <ul>
-        <li>Polyfill <code>TextEncoder</code> and <code>TextDecoder</code> from Node's <code>util</code> module — jsdom does not include them but react-router-dom v7 requires them</li>
+        <li>Polyfill <code>TextEncoder</code> and <code>TextDecoder</code> from Node's <code>util</code> module: jsdom does not include them but react-router-dom v7 requires them</li>
       </ul>
       <div class="callout"><strong>None of these errors had obvious solutions from the error messages alone.</strong> Each one took research to understand.</div>
 
       <div class="challenge-header"><span class="challenge-num">2</span>Mocking Keycloak Auth Context</div>
-      <p>Every component in my app uses <code>AuthContext</code> from <code>react-oauth2-code-pkce</code> to read the token and user data. In tests there is no Keycloak server — so every component would crash immediately trying to read from an empty context.</p>
+      <p>Every component in my app uses <code>AuthContext</code> from <code>react-oauth2-code-pkce</code> to read the token and user data. In tests there is no Keycloak server, so every component would crash immediately trying to read from an empty context.</p>
       <p>The solution was to use the real <code>AuthContext.Provider</code> with a fake value, wrapping each component in the render call:</p>
 <pre><code>&lt;AuthContext.Provider value={{
     token: 'fake-token',
@@ -144,11 +144,11 @@
     &lt;Navbar /&gt;
 &lt;/AuthContext.Provider&gt;</code></pre>
       <p>The <code>as any</code> cast is needed because we only provide the fields our components actually use, not every field the real <code>AuthContext</code> requires. This is an acceptable trade-off in tests.</p>
-      <p>By passing different roles arrays I could test both admin and regular user views in the same test file — which is where the most interesting assertions live.</p>
+      <p>By passing different roles arrays I could test both admin and regular user views in the same test file which is where the most interesting assertions live.</p>
 
       <div class="challenge-header"><span class="challenge-num">3</span>Testing Async Data Loading</div>
       <p>The <code>AllBirthday</code> page fetches data from the API inside a <code>useEffect</code> on mount. When the component first renders, the birthday list is empty. After the API call resolves, the list populates.</p>
-      <p>This means you cannot assert immediately after rendering — the data is not there yet. The <code>waitFor</code> utility from RTL solves this by retrying the assertion until it passes or times out:</p>
+      <p>This means you cannot assert immediately after rendering: the data is not there yet. The <code>waitFor</code> utility from RTL solves this by retrying the assertion until it passes or times out:</p>
 <pre><code>(api.get as jest.Mock).mockResolvedValue({
     data: [{ id: 1, firstName: 'John', lastName: 'Doe' }]
 });
@@ -157,23 +157,23 @@ await waitFor(() => {
     expect(screen.getByText('John')).toBeInTheDocument();
 });</code></pre>
 
-      <h2>The RTL Philosophy — Test What the User Sees</h2>
+      <h2>The RTL Philosophy: Test What the User Sees</h2>
       <p>The most important shift React Testing Library forces on you is this: <strong>stop testing implementation details, start testing behaviour.</strong></p>
       <p>Before RTL I would have tested things like: does the <code>isAdmin</code> state variable get set correctly? Does the <code>birthdayData</code> array have two items?</p>
-      <p>With RTL you test: does the Admin link appear on screen? Do both names appear in the table? This is a fundamentally better way to test because it reflects what actually matters — what the user experiences.</p>
+      <p>With RTL you test: does the Admin link appear on screen? Do both names appear in the table? This is a fundamentally better way to test because it reflects what actually matters: what the user experiences.</p>
 
       <h2>Key Lessons</h2>
       <ul>
         <li><strong>Set up your test environment before writing a single test.</strong> Fighting ESM issues mid-way through a test is demoralising.</li>
         <li><strong>Create a <code>renderX()</code> helper for each component</strong> that wraps it with all required providers. It makes tests readable and reduces repetition.</li>
-        <li><strong>Use <code>queryByText</code> (not <code>getByText</code>) when asserting something does NOT exist</strong> — <code>getByText</code> throws an error if the element is not found, which crashes the test before your assertion runs.</li>
-        <li><strong>Mock at the right level.</strong> Mock the entire <code>Navbar</code> component inside other page tests — you are not testing <code>Navbar</code> there, so do not set up its dependencies.</li>
+        <li><strong>Use <code>queryByText</code> (not <code>getByText</code>) when asserting something does NOT exist</strong> <code>getByText</code> throws an error if the element is not found, which crashes the test before your assertion runs.</li>
+        <li><strong>Mock at the right level.</strong> Mock the entire <code>Navbar</code> component inside other page tests you are not testing <code>Navbar</code> there, so do not set up its dependencies.</li>
         <li><strong><code>userEvent</code> is better than <code>fireEvent</code> for most interactions,</strong> but <code>fireEvent.change</code> is more reliable for date inputs in jsdom.</li>
       </ul>
 
       <h2>Conclusion</h2>
       <p>16 tests, all green. The setup took longer than the actual tests. But the result is a frontend that I can confidently change without worrying about breaking things silently.</p>
-      <p>If you are building a React portfolio project — adding even a handful of RTL tests signals to employers that you understand how production-grade frontend development works. The setup pain is worth it.</p>
+      <p>If you are building a React portfolio project adding even a handful of RTL tests signals to employers that you understand how production-grade frontend development works. The setup pain is worth it.</p>
       <p>Full project on GitHub. Questions welcome.</p>
 
       <div class="tag-list">
